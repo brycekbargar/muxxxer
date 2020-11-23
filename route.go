@@ -14,11 +14,13 @@ func (d *dispatcher) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	d.f(rw, r)
 }
 
+// Route is a combination of an http.Handler and the path it is registered to handle
 type Route struct {
 	Path    string
 	Handler http.Handler
 }
 
+// NewRoute creates a new Route by converting the handlerFunc to a Handler
 func NewRoute(p string, f func(http.ResponseWriter, *http.Request)) *Route {
 	return &Route{
 		p,
