@@ -8,7 +8,7 @@ There's also a Default instance of the muxxer exposed. This default instance is 
 
 The Route struct is used to "encapsulate" the logic for matching a route and give a nice struct to pass around for path/handler pairs.
 
-### Usage
+## Usage
 
 I also wanted to test creating and linking packages with go, the server implementation using this mux package looks something like:
 
@@ -34,3 +34,8 @@ func main() {
 	http.ListenAndServe(":8600", &muxxxer.Default)
 }
 ```
+
+### Path Matching
+
+Like the go standard library the path has to be an exact match to the route, unless there is a trailing slash.
+When a trailing slash is present in the route than any path beginning with that path is matched.

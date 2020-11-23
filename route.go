@@ -3,6 +3,7 @@ package muxxxer
 import (
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 type dispatcher struct {
@@ -26,6 +27,12 @@ func NewRoute(p string, f func(http.ResponseWriter, *http.Request)) *Route {
 }
 
 func (r *Route) handles(uri *url.URL) bool {
-	// Do matching things
-	return true
+
+	if strings.HasSuffix(r.Path, "/") {
+		return strings.HasPrefix(
+			strings.TrimLeft(uri.Path, "/"),
+			strings.Trim(r.Path, "/"))
+	} else {
+		return strings.Trim(uri.Path, "/") == strings.Trim(r.Path, "/")
+	}
 }
