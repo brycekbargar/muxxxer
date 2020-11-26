@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func matches(t *testing.T, r Route, us string) {
+func matches(t *testing.T, r *Route, us string) {
 	t.Helper()
 
 	u, err := url.Parse(us)
@@ -16,7 +16,7 @@ func matches(t *testing.T, r Route, us string) {
 	assert.True(t, r.handles(u), "because route: %s matches url: %s", r.Path, u.Path)
 }
 
-func doesnotmatch(t *testing.T, r Route, us string) {
+func doesnotmatch(t *testing.T, r *Route, us string) {
 	t.Helper()
 
 	u, err := url.Parse(us)
@@ -28,7 +28,7 @@ func TestRoute_exact(t *testing.T) {
 	testCases := []struct {
 		Name string
 		Url  string
-		Test func(*testing.T, Route, string)
+		Test func(*testing.T, *Route, string)
 	}{
 		{
 			"Short Path",
@@ -52,7 +52,7 @@ func TestRoute_exact(t *testing.T) {
 		},
 	}
 
-	route := Route{"/some/path", nil}
+	route := NewRoute("/some/path", nil)
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.Name, func(t *testing.T) {
@@ -66,7 +66,7 @@ func TestRoute_trailingslash(t *testing.T) {
 	testCases := []struct {
 		Name string
 		Url  string
-		Test func(*testing.T, Route, string)
+		Test func(*testing.T, *Route, string)
 	}{
 		{
 			"Short Path",
@@ -90,7 +90,7 @@ func TestRoute_trailingslash(t *testing.T) {
 		},
 	}
 
-	route := Route{"/some/path/", nil}
+	route := NewRoute("/some/path/", nil)
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.Name, func(t *testing.T) {

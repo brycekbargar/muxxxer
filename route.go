@@ -3,6 +3,7 @@ package muxxxer
 import (
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 )
 
@@ -16,25 +17,31 @@ func (d *dispatcher) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 // Route is a combination of an http.Handler and the path it is registered to handle
 type Route struct {
-	Path    string
+	Path    *regexp.Regexp
 	Handler http.Handler
 }
 
 // NewRoute creates a new Route by converting the handlerFunc to a Handler
 func NewRoute(p string, f func(http.ResponseWriter, *http.Request)) *Route {
+	p = strings.TrimLeft(p, "/")
+
+	if strings.HasSuffix(p, "/") {
+		p = strings.TrimRight(p, "/")
+		p += `(\/.*)?`
+	} else {
+		p += `\/?`
+	}
+	rxp, err := regexp.Compile("^" + p + "$")
+	if err != nil {
+		panic(err)
+	}
+
 	return &Route{
-		p,
+		rxp,
 		&dispatcher{f},
 	}
 }
 
 func (r *Route) handles(uri *url.URL) bool {
-
-	if strings.HasSuffix(r.Path, "/") {
-		return strings.HasPrefix(
-			strings.TrimLeft(uri.Path, "/"),
-			strings.Trim(r.Path, "/"))
-	} else {
-		return strings.Trim(uri.Path, "/") == strings.Trim(r.Path, "/")
-	}
+	return r.Path.MatchString(strings.TrimLeft(uri.Path, "/"))
 }
