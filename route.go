@@ -18,13 +18,16 @@ func (d *dispatcher) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // Route is a Regular Expression for testing whether the current request's Url matches the Route.
 // When a route is matches the Handler is executed.
 type Route struct {
+	rawPath string
 	Path    *regexp.Regexp
 	Handler http.Handler
 }
 
 // NewRoute creates a new Route by converting the handlerFunc to a Handler
 // Errors returned are from the regexp.Regexp library
-func NewRoute(p string, f func(http.ResponseWriter, *http.Request)) (*Route, error) {
+func NewRoute(p string, f func(http.ResponseWriter, *http.Request)) (route *Route, err error) {
+	route = &Route{rawPath: p, Handler: &dispatcher{f}}
+
 	p = strings.TrimLeft(p, "/")
 	p = `\/?` + p
 
@@ -35,15 +38,9 @@ func NewRoute(p string, f func(http.ResponseWriter, *http.Request)) (*Route, err
 		p += `\/?`
 	}
 
-	rxp, err := regexp.Compile("^" + p + "$")
-	if err != nil {
-		return nil, err
-	}
+	route.Path, err = regexp.Compile("^" + p + "$")
 
-	return &Route{
-		rxp,
-		&dispatcher{f},
-	}, nil
+	return
 }
 
 func (r *Route) handles(uri *url.URL) bool {

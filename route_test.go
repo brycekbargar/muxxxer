@@ -13,7 +13,9 @@ func matches(t *testing.T, r *Route, us string) {
 
 	u, err := url.Parse(us)
 	require.NoError(t, err)
-	assert.True(t, r.handles(u), "because route: %s matches url: %s", r.Path, u.Path)
+	if !assert.True(t, r.handles(u), "because route '%s' matches url '%s'", r.rawPath, u.Path) {
+		t.Log(r.Path)
+	}
 }
 
 func doesnotmatch(t *testing.T, r *Route, us string) {
@@ -21,10 +23,12 @@ func doesnotmatch(t *testing.T, r *Route, us string) {
 
 	u, err := url.Parse(us)
 	require.NoError(t, err)
-	assert.False(t, r.handles(u), "because route: %s does not match url: %s", r.Path, u.Path)
+	if !assert.False(t, r.handles(u), "because route '%s' doesn't match url '%s'", r.rawPath, u.Path) {
+		t.Log(r.Path)
+	}
 }
 
-func TestRoute_exact(t *testing.T) {
+func TestRoute_matchesexact(t *testing.T) {
 	testCases := []struct {
 		Name string
 		Url  string
@@ -64,7 +68,7 @@ func TestRoute_exact(t *testing.T) {
 	}
 }
 
-func TestRoute_trailingslash(t *testing.T) {
+func TestRoute_matchestrailingslash(t *testing.T) {
 	testCases := []struct {
 		Name string
 		Url  string
