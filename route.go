@@ -2,7 +2,6 @@ package muxxxer
 
 import (
 	"net/http"
-	"net/url"
 	"regexp"
 	"strings"
 )
@@ -41,8 +40,4 @@ func NewRoute(p string, f func(http.ResponseWriter, *http.Request)) (route *Rout
 	route.Path, err = regexp.Compile("^" + p + "$")
 
 	return
-}
-
-func (r *Route) handles(uri *url.URL) bool {
-	return r.Path.MatchString(uri.Path)
 }

@@ -23,6 +23,8 @@ func RegisterRoute(r *Route) {
 	Default.routes = append(Default.routes, r)
 }
 
+// MustRegisterRoute lets the Default mux know to route requests to the handler
+// It panics if given an error (this is probably an error during route instantiation)
 func MustRegisterRoute(r *Route, err error) {
 	if err != nil {
 		panic(err)
@@ -34,9 +36,9 @@ func MustRegisterRoute(r *Route, err error) {
 // ServeHTTP dispatches requests to the registered Routes
 func (m *muxxxer) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	for _, r := range Default.routes {
-		if r.handles(req.URL) {
+		if r.Path.MatchString(req.URL.Path) &&
+			r.Handler != nil {
 			r.Handler.ServeHTTP(rw, req)
-			return
 		}
 	}
 
