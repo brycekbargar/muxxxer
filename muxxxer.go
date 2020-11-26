@@ -2,7 +2,6 @@
 package muxxxer
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -33,6 +32,5 @@ func (m *muxxxer) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	fmt.Fprintf(rw, "Muxxxer couldn't find a registration for %s", req.URL)
-	// Do actual 404 things
+	http.NotFound(rw, req)
 }
