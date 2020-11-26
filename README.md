@@ -27,9 +27,9 @@ func Index(rw http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
-	muxxxer.RegisterRoute(muxxxer.NewRoute("/index", Index))
-	muxxxer.RegisterRoute(muxxxer.NewRoute(...))
-	muxxxer.RegisterRoute(muxxxer.NewRoute(...))
+	muxxxer.MustRegisterRoute(muxxxer.NewRoute("/index", Index))
+	muxxxer.MustRegisterRoute(muxxxer.NewRoute(...))
+	muxxxer.MustRegisterRoute(muxxxer.NewRoute(...))
 
 	http.ListenAndServe(":8600", &muxxxer.Default)
 }
@@ -39,3 +39,5 @@ func main() {
 
 Like the go standard library the path has to be an exact match to the route, unless there is a trailing slash.
 When a trailing slash is present in the route than any path beginning with that path is matched.
+
+If you want to specify your own regexp.Regexp for the Path note the url.Url.Path it is compared to is not modified in any way.

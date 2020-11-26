@@ -52,7 +52,9 @@ func TestRoute_exact(t *testing.T) {
 		},
 	}
 
-	route := NewRoute("/some/path", nil)
+	route, err := NewRoute("/some/path", nil)
+	require.NoError(t, err)
+
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.Name, func(t *testing.T) {
@@ -90,7 +92,9 @@ func TestRoute_trailingslash(t *testing.T) {
 		},
 	}
 
-	route := NewRoute("/some/path/", nil)
+	route, err := NewRoute("/some/path/", nil)
+	require.NoError(t, err)
+
 	for _, tc := range testCases {
 		tc := tc
 		t.Run(tc.Name, func(t *testing.T) {

@@ -23,6 +23,14 @@ func RegisterRoute(r *Route) {
 	Default.routes = append(Default.routes, r)
 }
 
+func MustRegisterRoute(r *Route, err error) {
+	if err != nil {
+		panic(err)
+	}
+
+	Default.routes = append(Default.routes, r)
+}
+
 // ServeHTTP dispatches requests to the registered Routes
 func (m *muxxxer) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	for _, r := range Default.routes {
