@@ -24,7 +24,6 @@ func doesnotmatch(t *testing.T, r *Route, us string) {
 	u, err := url.Parse(us)
 	require.NoError(t, err)
 	if !assert.False(t, r.Path.MatchString(u.Path), "because route '%s' doesn't match url '%s'", r.rawPath, u.Path) {
-
 		t.Log(r.Path)
 	}
 }

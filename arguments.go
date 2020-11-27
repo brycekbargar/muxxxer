@@ -9,16 +9,6 @@ import (
 var argRxp = regexp.MustCompile(`;[^\/]+(\/)?`)
 var argMatcher = `[^\/]+$1`
 
-// ArgumentBag contains ways to get path and query args from the matching url.
-type ArgumentBag struct {
-	rawRoute string
-	url      url.URL
-}
-
-func newArgumentBag(r string, req *http.Request) *ArgumentBag {
-	return &ArgumentBag{r, *req.URL}
-}
-
 // NewArgumentRoute creates a route with access to an ArgumentBag
 //
 // In order to capture a path segment to later be access in the ArgumentBag use the following syntax:
@@ -32,7 +22,7 @@ func NewArgumentRoute(r string, f func(http.ResponseWriter, *http.Request, *Argu
 	route, err = NewRoute(
 		argRxp.ReplaceAllString(r, argMatcher),
 		func(rw http.ResponseWriter, req *http.Request) {
-			f(rw, req, newArgumentBag(r, req))
+			f(rw, req, &ArgumentBag{rawRoute: r, url: req.URL})
 		})
 	if err != nil {
 		return
@@ -40,4 +30,28 @@ func NewArgumentRoute(r string, f func(http.ResponseWriter, *http.Request, *Argu
 
 	route.rawPath = r
 	return
+}
+
+// ArgumentBag contains ways to get query and path args from the matching url.
+type ArgumentBag struct {
+	rawRoute string
+	url      *url.URL
+	Args     map[string][]interface{}
+}
+
+// Parse populates Args.
+//
+// The resulting bag will contain the named parameters in the path in addition to any query parameters.
+// These values are strings unless otherwise specified.
+func (r *ArgumentBag) Parse() error {
+	args := make(map[string][]interface{})
+
+	for q, vs := range r.url.Query() {
+		for _, v := range vs {
+			args[q] = append(args[q], v)
+		}
+	}
+
+	r.Args = args
+	return nil
 }
