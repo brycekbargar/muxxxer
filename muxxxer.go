@@ -1,4 +1,6 @@
 // Package muxxxer is a naive mux implementation with a single default mux
+//
+// Note: This isn't intended for production use, it's just a test implementation for my own learning purposes
 package muxxxer
 
 import (
@@ -39,6 +41,7 @@ func (m *muxxxer) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 		if r.Path.MatchString(req.URL.Path) &&
 			r.Handler != nil {
 			r.Handler.ServeHTTP(rw, req)
+			return
 		}
 	}
 

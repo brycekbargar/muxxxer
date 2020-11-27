@@ -35,6 +35,8 @@ func main() {
 }
 ```
 
+See additional examples in muxxxer_test.go.
+
 ### Path Matching
 
 Like the go standard library the path has to be an exact match to the route, unless there is a trailing slash.
