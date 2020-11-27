@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strings"
 )
 
 var argRxp = regexp.MustCompile(`;[^\/]+(\/)?`)
@@ -33,6 +34,10 @@ func NewArgumentRoute(r string, f func(http.ResponseWriter, *http.Request, *Argu
 }
 
 // ArgumentBag contains ways to get query and path args from the matching url.
+//
+// Call *ArgumentBag.Parse() first, then the Args field will be populated.
+// The Args field map value is a slice, probably of strings.
+// If an argument is contained in both the path and the query string the singular path value will always be first in the slice.
 type ArgumentBag struct {
 	rawRoute string
 	url      *url.URL
@@ -45,6 +50,13 @@ type ArgumentBag struct {
 // These values are strings unless otherwise specified.
 func (r *ArgumentBag) Parse() error {
 	args := make(map[string][]interface{})
+
+	uSegs := strings.Split(strings.Trim(r.url.Path, "/"), "/")
+	for i, seg := range strings.Split(strings.Trim(r.rawRoute, "/"), "/") {
+		if strings.HasPrefix(seg, ";") {
+			args[strings.TrimLeft(seg, ";")] = []interface{}{uSegs[i]}
+		}
+	}
 
 	for q, vs := range r.url.Query() {
 		for _, v := range vs {

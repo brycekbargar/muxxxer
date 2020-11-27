@@ -46,6 +46,31 @@ func TestArgumentBag(t *testing.T) {
 				"pancakes": {"banana", "pecan"},
 			},
 		},
+		{
+			"Single path value",
+			"/a/;pancakes/",
+			"http://localhost/a/banana",
+			map[string][]string{
+				"pancakes": {"banana"},
+			},
+		},
+		{
+			"Multiple path value",
+			"/a/;pancakes/and/;loris/",
+			"http://localhost/a/banana/and/slow",
+			map[string][]string{
+				"pancakes": {"banana"},
+				"loris":    {"slow"},
+			},
+		},
+		{
+			"Path and query",
+			"/a/;pancakes/",
+			"http://localhost/a/banana/with?pancakes=pecan",
+			map[string][]string{
+				"pancakes": {"banana", "pecan"},
+			},
+		},
 	}
 
 	for _, tc := range testCases {

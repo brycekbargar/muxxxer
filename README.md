@@ -41,3 +41,17 @@ Like the go standard library the path has to be an exact match to the route, unl
 When a trailing slash is present in the route than any path beginning with that path is matched.
 
 If you want to specify your own regexp.Regexp for the Path note the url.Url.Path it is compared to is not modified in any way.
+
+### Path Arguments
+
+One thing I noticed was missing from the standard library was parameters from the path of a route.
+For example, `/users/{id}` or `/users/{id}/actions/disable` etc.
+I'm pretty sure actual go web frameworks have this and I wanted to see what implementing it would entail.
+
+You can optionally register a route using the `muxxxer.NewArgumentRoute` function.
+This modifies the normal ServeHTTP callback to also take an `ArgumentBag` parameter.
+This bag requires Parsing like parsing of form values in the standard library.
+After parsing, values captured from the route and query parameters are available in a map by name.
+
+The map is a `map[string][]interface{}`. This is a little weird.
+I had grand intentions to parse different kinds of values like integers and booleans which is why I chose a map of interfaces instead of strings.
