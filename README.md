@@ -1,5 +1,7 @@
 # Muxxxer
 
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/brycekbargar/muxxxer)](https://pkg.go.dev/github.com/brycekbargar/muxxxer)
+
 While working through "Go Web Programming" I wanted to see if I was understanding how the net/http library was working under the hood. Go is a little less magic than other web frameworks but is still pretty magic.
 
 This mux "implementation" converts handlerFuncs into actual handlers using a dispatcher, I don't really know how the actual standard library does it but this seemed reasonable to me?
